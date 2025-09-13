@@ -1,13 +1,10 @@
 package Ordenamiento;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedList;
 
-public class main {
+public class Main {
 
-	public static void main(String[] args) {
+	public static void main() {
 		Ordenamiento ord = new Ordenamiento();
 		LinkedList<Integer> prueba = new LinkedList<Integer>();
 
