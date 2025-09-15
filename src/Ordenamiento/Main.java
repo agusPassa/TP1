@@ -1,23 +1,29 @@
 package Ordenamiento;
 
-import java.util.LinkedList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class Main {
 
 	public static void main(String[] args) {
-		Ordenamiento ord = new Ordenamiento();
-		LinkedList<Integer> prueba = new LinkedList<Integer>();
+		// Casos típicos para probar el algoritmo
+		List<List<Integer>> casos = Arrays.asList(Collections.emptyList(), // 1. Vacío
+				Arrays.asList(42), // 2. Un solo elemento
+				Arrays.asList(1, 2, 3, 4, 5), // 3. Ya ordenado
+				Arrays.asList(5, 4, 3, 2, 1), // 4. Inverso
+				Arrays.asList(4, 2, 4, 3, 2), // 5. Repetidos
+				Arrays.asList(-3, 7, -1, 5, 0), // 6. Negativos y positivos
+				Arrays.asList(9, 9, 9, 9), // 7. Todos iguales
+				Arrays.asList(7, 3, 1, 8, 2, 5, 4, 6) // 8. Aleatorio
+		);
 
-		prueba.add(10);
-		prueba.add(11);
-		prueba.add(12);
-		prueba.add(13);
-		prueba.add(1);
-
-		System.out.println(ord.apilar(prueba));
-		System.out.println(ord.ordenarNumeros(prueba));
-
-
+		int casoNum = 1;
+		for (List<Integer> caso : casos) {
+			List<Integer> resultado = Ordenamiento.patienceSort(caso);
+			System.out.println("Caso " + casoNum + ": " + caso + " -> " + resultado);
+			casoNum++;
+		}
 	}
 
 }
