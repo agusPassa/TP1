@@ -58,6 +58,7 @@ public class Ordenamiento {
 			tuplaTopes.put(elem, cont);
 			cont++;
 		}
+		
 		while(tam>0)
 		{
 			T elem=cola.remove();
@@ -69,6 +70,16 @@ public class Ordenamiento {
 				tam--; 
 				//No puedo sacar una pila porque cambiaría los indices internos
 				//de la lista de pilas. Pos no se vuelve a repetir
+				
+				//Si el elemento que acabamos de sacar es tope de otra pila hay que actualizar el mapa
+				if(elem.equals(cola.peek())) 
+				{
+					for(int i = 0; i < pilas.size(); i++) {
+						Stack<T> pila = pilas.get(i);
+						if(!pila.isEmpty() && pila.lastElement().equals(elem))
+							tuplaTopes.put(elem, i);
+					}
+				}
 			}
 			else
 			{
@@ -79,8 +90,9 @@ public class Ordenamiento {
 		}
 		return ordenada;
 	}
-	public <T extends Comparable<T>> List<T> ordenarNumeros(LinkedList<T> vec) {
-		return this.ordenarPilas(this.apilar(vec));
+	public <T extends Comparable<T>> List<T> ordenarNumeros(List<T> vec) {
+		List<T> res = this.ordenarPilas(this.apilar(vec));
+		return res == null ? vec : res;
 	}	
 	//Esta busqueda retorna la posicion final donde debe ser insertado el elemento N
 	//Lo dejo en publico para testearlo, la idea final seria que sea privado
