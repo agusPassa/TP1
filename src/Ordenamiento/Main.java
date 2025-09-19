@@ -10,17 +10,24 @@ public class Main {
 		Ordenamiento ord = new Ordenamiento();
 		LinkedList<Integer> prueba = new LinkedList<Integer>();
 
-		prueba.add(10);
-		prueba.add(11);
-		prueba.add(12);
-		prueba.add(13);
 		prueba.add(1);
+		prueba.add(2);
+		prueba.add(3);
+		prueba.add(4);
+		prueba.add(5);
+		prueba.add(5);
+		prueba.add(-1);
+		prueba.add(8);
+		prueba.add(6);
+		prueba.add(99);
+		prueba.add(7);
 
 		ord.apilar(prueba);
 		ord.ordenarNumeros(prueba);
 		
-		System.out.println(ord.apilar(prueba));
+		System.out.println(prueba);
 		System.out.println(ord.ordenarNumeros(prueba));
+		System.out.println("Longest Increasing Subsequence: "+ord.obtenerLIS(prueba));
 
 
 	}

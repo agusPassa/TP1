@@ -10,37 +10,46 @@ import java.util.Collections;
 import java.util.HashMap;
 
 public class Ordenamiento {
+	
+	class Nodo<T> {
+	    T valor;
+	    Nodo<T> predecesor;
 
-	public <T extends Comparable<T>> List<Stack<T>> apilar(List<T> vec)
+	    Nodo(T valor, Nodo<T> predecesor) {
+	        this.valor = valor;
+	        this.predecesor = predecesor;
+	    }
+	}
+	
+	public <T extends Comparable<T>> List<Stack<Nodo<T>>> apilar(List<T> vec)
 	{
 		if(vec.isEmpty())
 			return null;
-		List<Stack<T>> resultado = new ArrayList<Stack<T>>();
-		//Primer elemento, se crea la pila y le metemos el primer elemento de vec
-		resultado.add(new Stack<T>());
+		List<Stack<Nodo<T>>> resultado = new ArrayList<Stack<Nodo<T>>>(1);
 		ArrayList<T> topes = new ArrayList<T>();
 		//Sobre este ArrayList vamos a hacer bsearch aprovechando que está por
 		//definición ordenado de menor a mayor
-		resultado.get(0).add(vec.getFirst());
-		topes.add(vec.getFirst());
-		for(int i=1; i<=vec.size()-1; i++) {
-			T elem = vec.get(i);
+
+		for(T elem: vec) {
 			int pos=this.busquedaBinariaMod(topes, elem);
 			if(pos>resultado.size()-1)
 			{
-				resultado.add(new Stack<T>());
+				resultado.add(new Stack<Nodo<T>>());
 				topes.add(elem);
 			}
 			else
 			{				
 				topes.set(pos, elem);
 			}
-			resultado.get(pos).add(elem);
+			Nodo<T> aux = new Nodo<T>(elem, (pos==0)?null:resultado.get(pos-1).lastElement());
+			resultado.get(pos).add(aux);
 		}
 		return resultado;
 	}
 	
-	public <T extends Comparable<T>> List<T> ordenarPilas(List<Stack<T>> pilas)
+
+	
+	public <T extends Comparable<T>> List<T> ordenarPilas(List<Stack<Nodo<T>>> pilas)
 	{
 		if(pilas == null)
 			return null;
@@ -52,10 +61,10 @@ public class Ordenamiento {
 		ArrayList<T> ordenada = new ArrayList<T>();
 		Map<T, Integer> tuplaTopes = new HashMap<T, Integer>();
 		//Carga inicial de topes
-		for (Stack<T> pila : pilas) {
-			T elem=pila.getLast();
-			cola.add(elem);
-			tuplaTopes.put(elem, cont);
+		for (Stack<Nodo<T>> pila : pilas) {
+			Nodo<T> elem=pila.getLast();
+			cola.add(elem.valor);
+			tuplaTopes.put(elem.valor, cont);
 			cont++;
 		}
 		
@@ -75,23 +84,45 @@ public class Ordenamiento {
 				if(elem.equals(cola.peek())) 
 				{
 					for(int i = 0; i < pilas.size(); i++) {
-						Stack<T> pila = pilas.get(i);
-						if(!pila.isEmpty() && pila.lastElement().equals(elem))
+						Stack<Nodo<T>> pila = pilas.get(i);
+						if(!pila.isEmpty() && pila.lastElement().valor.equals(elem))
 							tuplaTopes.put(elem, i);
 					}
 				}
 			}
 			else
 			{
-				elem=pilas.get(pos).getLast();
+				elem=pilas.get(pos).getLast().valor;
 				cola.add(elem);
 				tuplaTopes.put(elem, pos);
 			}			
 		}
 		return ordenada;
 	}
+	
+	private <T extends Comparable<T>> List<T> obtenerLISConPilas(List<Stack<Nodo<T>>> pilas)
+	{
+		if(pilas == null)
+			return null;
+		List<T> res = new ArrayList<T>(1);
+		Nodo<T> ultimo= pilas.getLast().getLast();
+		while(ultimo.predecesor != null)
+		{
+			res.add(ultimo.valor);
+			ultimo=ultimo.predecesor;
+		}
+		res.add(ultimo.valor);
+		Collections.reverse(res);
+		return res;
+	}
+	
 	public <T extends Comparable<T>> List<T> ordenarNumeros(List<T> vec) {
 		List<T> res = this.ordenarPilas(this.apilar(vec));
+		return res == null ? vec : res;
+	}	
+	
+	public <T extends Comparable<T>> List<T> obtenerLIS(List<T> vec) {
+		List<T> res = this.obtenerLISConPilas(this.apilar(vec));
 		return res == null ? vec : res;
 	}	
 	//Esta busqueda retorna la posicion final donde debe ser insertado el elemento N
