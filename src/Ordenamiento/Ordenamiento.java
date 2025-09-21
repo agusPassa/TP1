@@ -1,22 +1,44 @@
 package Ordenamiento;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Stack;
 
-import complejidad_computacional.Ordenamiento.Nodo;
-
-import java.util.Collections;
-import java.util.HashMap;
-
 public class Ordenamiento {
 
-	public static <T extends Comparable<T>> List<T> patienceSort(List<T> input) {
+	public static <T extends Comparable<T>> void patienceSort(List<T> input) {
 	    // ---- FASE 1: Construcción de las pilas ----
-	    List<Stack<T>> pilas = new ArrayList<>();
+	    List<Stack<T>> pilas = apilar(input);
+
+	    // ---- FASE 2: Merge con cola de prioridad ----
+	    // La cola guarda (valor del tope, índice de pila)
+	    mezclarPilas(input, pilas);
+	}
+
+	private static <T extends Comparable<T>> void mezclarPilas(List<T> array, List<Stack<T>> pilas) {
+		PriorityQueue<Nodo<T>> colaTopes = new PriorityQueue<>();
+	    for (int i = 0; i < pilas.size(); i++) {
+	        Stack<T> pila = pilas.get(i);
+	        colaTopes.offer(new Nodo<>(pila.pop(), i));
+	    }
+
+	    int i = 0;
+	    while (!colaTopes.isEmpty()) {
+	    	Nodo<T> nodo = colaTopes.poll(); // Extraer mínimo
+	    	array.set(i, nodo.valorTope);
+
+	        // Si la pila de donde salió aún tiene elementos, meter el nuevo tope
+	        Stack<T> pila = pilas.get(nodo.indicePila);
+	        if (!pila.isEmpty()) {
+	            colaTopes.offer(new Nodo<>(pila.pop(), nodo.indicePila));
+	        }
+	        i++;
+	    }
+	}
+
+	private static <T extends Comparable<T>> List<Stack<T>> apilar(List<T> input) {
+		List<Stack<T>> pilas = new ArrayList<>();
 
 	    for (T x : input) {
 	        // Búsqueda binaria para encontrar la primera pila cuyo tope >= x
@@ -27,28 +49,7 @@ public class Ordenamiento {
 	        }
 	        pilas.get(i).push(x);
 	    }
-
-	    // ---- FASE 2: Merge con cola de prioridad ----
-	    // La cola guarda (valor del tope, índice de pila)
-	    PriorityQueue<Nodo<T>> colaTopes = new PriorityQueue<>();
-	    for (int i = 0; i < pilas.size(); i++) {
-	        Stack<T> pila = pilas.get(i);
-	        colaTopes.offer(new Nodo<>(pila.pop(), i));
-	    }
-
-	    List<T> resultado = new ArrayList<>();
-	    while (!colaTopes.isEmpty()) {
-	        Nodo<T> nodo = colaTopes.poll(); // Extraer mínimo
-	        resultado.add(nodo.valorTope);
-
-	        // Si la pila de donde salió aún tiene elementos, meter el nuevo tope
-	        Stack<T> pila = pilas.get(nodo.indicePila);
-	        if (!pila.isEmpty()) {
-	            colaTopes.offer(new Nodo<>(pila.pop(), nodo.indicePila));
-	        }
-	    }
-
-	    return resultado;
+		return pilas;
 	}
 
 	// Búsqueda binaria sobre los topes de las pilas

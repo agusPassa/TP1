@@ -20,10 +20,10 @@ public class Main {
 
 		int casoNum = 1;
 		for (List<Integer> caso : casos) {
-			List<Integer> resultado = Ordenamiento.patienceSort(caso);
-			System.out.println("Caso " + casoNum + ": " + caso + " -> " + resultado);
+			System.out.print("Caso " + casoNum + ": " + caso + " -> ");
+			Ordenamiento.patienceSort(caso);
+			System.out.println(caso);
 			casoNum++;
 		}
 	}
-
 }
