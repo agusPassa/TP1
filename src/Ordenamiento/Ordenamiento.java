@@ -13,10 +13,25 @@ public class Ordenamiento {
 
 	    // ---- FASE 2: Merge con cola de prioridad ----
 	    // La cola guarda (valor del tope, índice de pila)
-	    mezclarPilas(input, pilas);
+	    fusionarPilas(input, pilas);
 	}
 
-	private static <T extends Comparable<T>> void mezclarPilas(List<T> array, List<Stack<T>> pilas) {
+	private static <T extends Comparable<T>> List<Stack<T>> apilar(List<T> input) {
+		List<Stack<T>> pilas = new ArrayList<>();
+		
+		for (T x : input) {
+			// Búsqueda binaria para encontrar la primera pila cuyo tope >= x
+			int i = binarySearch(pilas, x);
+			if (i == pilas.size()) {
+				// No se encontró -> crear nueva pila
+				pilas.add(new Stack<>());
+			}
+			pilas.get(i).push(x);
+		}
+		return pilas;
+	}
+	
+	private static <T extends Comparable<T>> void fusionarPilas(List<T> array, List<Stack<T>> pilas) {
 		PriorityQueue<Nodo<T>> colaTopes = new PriorityQueue<>();
 	    for (int i = 0; i < pilas.size(); i++) {
 	        Stack<T> pila = pilas.get(i);
@@ -35,21 +50,6 @@ public class Ordenamiento {
 	        }
 	        i++;
 	    }
-	}
-
-	private static <T extends Comparable<T>> List<Stack<T>> apilar(List<T> input) {
-		List<Stack<T>> pilas = new ArrayList<>();
-
-	    for (T x : input) {
-	        // Búsqueda binaria para encontrar la primera pila cuyo tope >= x
-	        int i = binarySearch(pilas, x);
-	        if (i == pilas.size()) {
-	            // No se encontró -> crear nueva pila
-	            pilas.add(new Stack<>());
-	        }
-	        pilas.get(i).push(x);
-	    }
-		return pilas;
 	}
 
 	// Búsqueda binaria sobre los topes de las pilas
